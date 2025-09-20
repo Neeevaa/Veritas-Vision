@@ -45,7 +45,7 @@ export default function SignInPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
-  const { auth } = useAuth();
+  const { auth, loading: authLoading } = useAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -90,6 +90,8 @@ export default function SignInPage() {
     }
   };
 
+  const isAuthReady = !authLoading && auth;
+
   return (
     <div className="container flex min-h-[calc(100vh-57px)] items-center justify-center">
       <Card className="mx-auto max-w-sm">
@@ -112,7 +114,7 @@ export default function SignInPage() {
                       <Input
                         placeholder="m@example.com"
                         {...field}
-                        disabled={isLoading || !auth}
+                        disabled={isLoading || !isAuthReady}
                       />
                     </FormControl>
                     <FormMessage />
@@ -130,14 +132,14 @@ export default function SignInPage() {
                         type="password"
                         placeholder="••••••••"
                         {...field}
-                        disabled={isLoading || !auth}
+                        disabled={isLoading || !isAuthReady}
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full" disabled={isLoading || !auth}>
+              <Button type="submit" className="w-full" disabled={isLoading || !isAuthReady}>
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Sign in
               </Button>
@@ -147,7 +149,7 @@ export default function SignInPage() {
             variant="outline"
             className="w-full mt-4"
             onClick={handleGoogleSignIn}
-            disabled={isLoading || !auth}
+            disabled={isLoading || !isAuthReady}
           >
              {isLoading ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

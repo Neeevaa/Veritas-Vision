@@ -52,7 +52,7 @@ export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
-  const { auth } = useAuth();
+  const { auth, loading: authLoading } = useAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -98,6 +98,7 @@ export default function SignUpPage() {
     }
   };
 
+  const isAuthReady = !authLoading && auth;
 
   return (
     <div className="container flex min-h-[calc(100vh-57px)] items-center justify-center">
@@ -121,7 +122,7 @@ export default function SignUpPage() {
                       <Input
                         placeholder="m@example.com"
                         {...field}
-                        disabled={isLoading || !auth}
+                        disabled={isLoading || !isAuthReady}
                       />
                     </FormControl>
                     <FormMessage />
@@ -139,7 +140,7 @@ export default function SignUpPage() {
                         type="password"
                         placeholder="••••••••"
                         {...field}
-                        disabled={isLoading || !auth}
+                        disabled={isLoading || !isAuthReady}
                       />
                     </FormControl>
                     <FormMessage />
@@ -157,14 +158,14 @@ export default function SignUpPage() {
                         type="password"
                         placeholder="••••••••"
                         {...field}
-                        disabled={isLoading || !auth}
+                        disabled={isLoading || !isAuthReady}
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full" disabled={isLoading || !auth}>
+              <Button type="submit" className="w-full" disabled={isLoading || !isAuthReady}>
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Create account
               </Button>
@@ -174,7 +175,7 @@ export default function SignUpPage() {
             variant="outline"
             className="w-full mt-4"
             onClick={handleGoogleSignIn}
-            disabled={isLoading || !auth}
+            disabled={isLoading || !isAuthReady}
           >
              {isLoading ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
