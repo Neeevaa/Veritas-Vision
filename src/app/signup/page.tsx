@@ -64,6 +64,7 @@ export default function SignUpPage() {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (!auth) return;
     setIsLoading(true);
     try {
       await createUserWithEmailAndPassword(auth, values.email, values.password);
@@ -82,6 +83,7 @@ export default function SignUpPage() {
   };
   
   const handleGoogleSignIn = async () => {
+    if (!auth) return;
     setIsLoading(true);
     try {
       await signInWithPopup(auth, googleProvider);
@@ -119,7 +121,7 @@ export default function SignUpPage() {
                       <Input
                         placeholder="m@example.com"
                         {...field}
-                        disabled={isLoading}
+                        disabled={isLoading || !auth}
                       />
                     </FormControl>
                     <FormMessage />
@@ -137,7 +139,7 @@ export default function SignUpPage() {
                         type="password"
                         placeholder="••••••••"
                         {...field}
-                        disabled={isLoading}
+                        disabled={isLoading || !auth}
                       />
                     </FormControl>
                     <FormMessage />
@@ -155,14 +157,14 @@ export default function SignUpPage() {
                         type="password"
                         placeholder="••••••••"
                         {...field}
-                        disabled={isLoading}
+                        disabled={isLoading || !auth}
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button type="submit" className="w-full" disabled={isLoading || !auth}>
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Create account
               </Button>
@@ -172,7 +174,7 @@ export default function SignUpPage() {
             variant="outline"
             className="w-full mt-4"
             onClick={handleGoogleSignIn}
-            disabled={isLoading}
+            disabled={isLoading || !auth}
           >
              {isLoading ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

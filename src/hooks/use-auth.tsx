@@ -15,40 +15,33 @@ import {
   type Auth,
   type User,
 } from 'firebase/auth';
-import { app } from '@/lib/firebase';
-
-let auth: Auth;
-try {
-  auth = getAuth(app);
-} catch (error) {
-  // This can happen during server-side rendering, it's safe to ignore
-  console.log('Firebase auth not initialized yet.');
-}
-
+import { getFirebaseApp } from '@/lib/firebase';
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   signOut: () => Promise<void>;
-  auth: Auth;
+  auth: Auth | null;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
   signOut: async () => {},
-  auth: auth,
+  auth: null,
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [auth, setAuth] = useState<Auth | null>(null);
 
   useEffect(() => {
-    if (!auth) {
-      auth = getAuth(app);
-    }
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const app = getFirebaseApp();
+    const authInstance = getAuth(app);
+    setAuth(authInstance);
+
+    const unsubscribe = onAuthStateChanged(authInstance, (user) => {
       setUser(user);
       setLoading(false);
     });
@@ -57,8 +50,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const signOut = async () => {
-    await firebaseSignOut(auth);
-    setUser(null);
+    if (auth) {
+      await firebaseSignOut(auth);
+      setUser(null);
+    }
   };
 
   return (

@@ -56,6 +56,7 @@ export default function SignInPage() {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (!auth) return;
     setIsLoading(true);
     try {
       await signInWithEmailAndPassword(auth, values.email, values.password);
@@ -74,6 +75,7 @@ export default function SignInPage() {
   };
 
   const handleGoogleSignIn = async () => {
+    if (!auth) return;
     setIsLoading(true);
     try {
       await signInWithPopup(auth, googleProvider);
@@ -110,7 +112,7 @@ export default function SignInPage() {
                       <Input
                         placeholder="m@example.com"
                         {...field}
-                        disabled={isLoading}
+                        disabled={isLoading || !auth}
                       />
                     </FormControl>
                     <FormMessage />
@@ -128,14 +130,14 @@ export default function SignInPage() {
                         type="password"
                         placeholder="••••••••"
                         {...field}
-                        disabled={isLoading}
+                        disabled={isLoading || !auth}
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button type="submit" className="w-full" disabled={isLoading || !auth}>
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Sign in
               </Button>
@@ -145,7 +147,7 @@ export default function SignInPage() {
             variant="outline"
             className="w-full mt-4"
             onClick={handleGoogleSignIn}
-            disabled={isLoading}
+            disabled={isLoading || !auth}
           >
              {isLoading ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
