@@ -30,7 +30,7 @@ const getVerdictInfo = (verdict: string) => {
 }
 
 export default function AnalysisResults({ result }: { result: AnalysisResult }) {
-  const { misinformationReport, verifiedContext } = result;
+  const { misinformationReport, originalSource, context } = result;
   const verdictInfo = getVerdictInfo(misinformationReport.verdict);
 
   return (
@@ -94,12 +94,12 @@ export default function AnalysisResults({ result }: { result: AnalysisResult }) 
         <CardContent className="space-y-4">
             <div>
                 <h4 className="font-semibold">Original Source</h4>
-                <p className="text-sm text-muted-foreground break-all">{verifiedContext.originalSource || 'Could not be determined.'}</p>
+                <p className="text-sm text-muted-foreground break-all">{originalSource || 'Could not be determined.'}</p>
             </div>
             <Separator />
             <div>
                 <h4 className="font-semibold">Verified Context</h4>
-                <p className="text-sm text-muted-foreground">{verifiedContext.context || 'No additional context found.'}</p>
+                <p className="text-sm text-muted-foreground">{context || 'No additional context found.'}</p>
             </div>
         </CardContent>
       </Card>
