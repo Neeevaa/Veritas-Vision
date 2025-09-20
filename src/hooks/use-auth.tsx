@@ -37,6 +37,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [auth, setAuth] = useState<Auth | null>(null);
 
   useEffect(() => {
+    // getFirebaseApp() will now initialize on first call, client-side only
     const app = getFirebaseApp();
     const authInstance = getAuth(app);
     setAuth(authInstance);
