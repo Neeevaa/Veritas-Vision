@@ -1,3 +1,35 @@
+
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "typology-1",
+      "description": "A misleading chart with exaggerated data points.",
+      "imageUrl": "https://picsum.photos/seed/101/600/400",
+      "imageHint": "misleading chart"
+    },
+    {
+      "id": "typology-2",
+      "description": "A fake news website design on a laptop screen.",
+      "imageUrl": "https://picsum.photos/seed/102/600/400",
+      "imageHint": "fake news"
+    },
+    {
+      "id": "typology-3",
+      "description": "An AI-generated image that looks realistic but is completely fake.",
+      "imageUrl": "https://picsum.photos/seed/103/600/400",
+      "imageHint": "deepfake portrait"
+    },
+    {
+      "id": "typology-4",
+      "description": "An old photo of a flood being presented as a current event.",
+      "imageUrl": "https://picsum.photos/seed/104/600/400",
+      "imageHint": "natural disaster"
+    },
+    {
+      "id": "typology-5",
+      "description": "A person laughing while reading a satirical newspaper.",
+      "imageUrl": "https://picsum.photos/seed/105/600/400",
+      "imageHint": "reading newspaper"
+    }
+  ]
 }
