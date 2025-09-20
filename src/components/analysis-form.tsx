@@ -23,23 +23,22 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AnalysisResults from './analysis-results';
 import { Card, CardContent } from './ui/card';
 
-const formSchema = z
-  .object({
-    inputType: z.enum(['text', 'link']),
-    text: z.string(),
-    link: z.string().url({ message: 'Please enter a valid URL.' }),
-  })
-  .refine(
-    (data) => {
-      if (data.inputType === 'text') return data.text.trim().length > 0;
-      if (data.inputType === 'link') return data.link.trim().length > 0;
-      return false;
-    },
-    {
-      message: 'Please enter content to analyze.',
-      path: ['text'], // Show error on a common field
+const formSchema = z.object({
+  inputType: z.enum(['text', 'link']),
+  text: z.string(),
+  link: z.string(),
+}).refine(data => {
+    if (data.inputType === 'text') {
+        return data.text.trim().length > 0;
     }
-  );
+    if (data.inputType === 'link') {
+        return data.link.trim().length > 0 && z.string().url().safeParse(data.link).success;
+    }
+    return false;
+}, {
+    message: 'Please enter valid content to analyze.',
+    path: ['text'], // This path will be dynamically adjusted in the component
+});
 
 type FormValues = z.infer<typeof formSchema>;
 
@@ -49,7 +48,18 @@ export default function AnalysisForm() {
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: (values, context, options) => {
+        if (values.inputType === 'link') {
+            const linkResult = z.string().url({ message: 'Please enter a valid URL.' }).safeParse(values.link);
+            if (!linkResult.success) {
+                return {
+                    values: {},
+                    errors: { link: { type: 'manual', message: 'Please enter a valid URL.' } },
+                };
+            }
+        }
+        return zodResolver(formSchema)(values, context, options);
+    },
     defaultValues: {
       inputType: 'text',
       text: '',
@@ -77,6 +87,8 @@ export default function AnalysisForm() {
       setAnalysisResult(data);
     }
   }
+  
+  const inputType = form.watch('inputType');
 
   return (
     <Card>
@@ -106,7 +118,7 @@ export default function AnalysisForm() {
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage />
+                      {inputType === 'text' && <FormMessage />}
                     </FormItem>
                   )}
                 />
@@ -121,7 +133,7 @@ export default function AnalysisForm() {
                       <FormControl>
                         <Input placeholder="https://example.com/article" {...field} />
                       </FormControl>
-                      <FormMessage />
+                       {inputType === 'link' && <FormMessage />}
                     </FormItem>
                   )}
                 />
